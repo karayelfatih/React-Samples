@@ -1,31 +1,19 @@
 import React from 'react'
+import { suppliers } from '../data/supplierData'
 
-function JsxSample3() {
+function JsxMapSample5() {
 
-    let cities = ['İstanbul', 'Londra', 'Moskova', 'Havana', 'Tahran', 'Atina']
 
-    //Bu şehirleri ul içerisindeki li de göster
+
     return (
         <>
             <ul>
                 {
-                    cities.map((item) => {
-
-                       return (<li>{item}</li>)
-
-                    })
-                }
-
-                {
-                    cities.map((item) =>  (<li>{item}</li>))
+                    suppliers.map((item,key) => (<li key={key}>{item.companyName}</li>))
                 }
             </ul>
-
-
         </>
     )
 }
 
-export default JsxSample3
-
-
+export default JsxMapSample5

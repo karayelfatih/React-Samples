@@ -1,34 +1,25 @@
 import React from 'react'
 
-function JsxSample() {
+function JsxSample2() {
 
-    //var, let ve const olarak tanımlanıyor
-    //Tek yönlü bir akış söz konusu
+    var onlineStatus = false;
 
-    const name = "Çağatay"
-    const age = 18
 
-    const user = {
-        name:'Çağatay',
-        surname:'Yıldız',
-        age:17.5,
-        city:'LA'
-    }
+    //onlineStatus true ise ekrana "Kullanıcı online!" değilse "Kullanıcı offline!" yazsın!
+
+    //tek satırda if örneği
+
+    // var data = onlineStatus == true ? "Kullanıcı Online!" : "Kullanıcı offline"
+
+    //Bir js dosyasında jsx kullanacaksanız PARANTEZ AÇIYORSUNUZ. JSx içerisinde JS kullanacaksan { } açıyorsun
 
     return (
         <>
-            <div>
-                <span>{name.toUpperCase()}</span>
-                <hr></hr>
-
-                <span>{age}</span>
-
-                <hr></hr>
-
-                <span>{user.city}</span>
-            </div>
+         {
+             onlineStatus === true ? (<span>Kullanı Online</span>) : (<span>Kullanıcı Offline!</span>)
+         }
         </>
     )
 }
 
-export default JsxSample
+export default JsxSample2

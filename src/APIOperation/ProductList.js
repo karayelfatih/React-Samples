@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react'
 
+import _ from 'lodash'
+import { Link } from 'react-router-dom';
+
+
 function ProductList() {
 
-    const [products, setProducts] = useState([])
-    const [count, setCount] = useState(0)
+    const [products, setProducts] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [sortAsc, setSortAsc] = useState(true);
 
-    const [minPrice, setMinPrice] = useState(0);
-    const [maxPrice, setMaxPrice] = useState(0);
+
+    
 
     useEffect(() => {
-        getData()
-    }, [])
-
-
-    const getData = () => {
 
         fetch('https://northwind.vercel.app/api/products')
             .then((res) => res.json())
@@ -21,70 +21,118 @@ function ProductList() {
                 setProducts(data);
             })
 
-    }
+        fetch('https://northwind.vercel.app/api/categories')
+            .then((res) => res.json())
+            .then((data) => {
+                setCategories(data);
+            })
+
+    }, [])
 
 
-    const getproducts = () => {
+    const changeOption = (selectedValue) => {
 
-        fetch('https://northwind.vercel.app/api/products')
-        .then((res) => res.json())
-        .then((data) => {
-            setProducts(data.slice(0,count));
-        })
-    }
-    const getProducts = () => {
-
-        let newProducts = products.filter(q => q.unitPrice > minPrice && q.unitPrice < maxPrice);
+        var newProducts = products.filter(q => q.categoryId == selectedValue);
         setProducts([...newProducts])
     }
-    return (
-        <>
 
-            <div>
-                <label>Min Price</label>
-                <input type='text' value={minPrice} onChange={(e) => setMinPrice(e.target.value)} />
-            </div>
-            <div>
-                <label>Max Price</label>
-                <input type='text' value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} />
-            </div>
-            <div>
-                <button onClick={() => getProducts()}>Get Products</button>
+
+    const sortProducts = () => {
+
+        if(sortAsc){
+            var sortedProducts = _.orderBy(products, ['name'],['asc']); 
+            setProducts([...sortedProducts])
+            setSortAsc(false)
+        }
+        else{
+            var sortedProducts = _.orderBy(products, ['name'],['desc']); 
+            setProducts([...sortedProducts])
+            setSortAsc(true)
+
+        }
+     
+        // let sortedProducts = products.sort(compare)
+
+        // function compare(a, b) {
+
+        //     if(sortAsc == true){
+
+        //         setSortAsc(false)
+
+        //         if (a.name < b.name) {
+        //             return -1;
+        //         }
+        //         if (a.name > b.name) {
+        //             return 1;
+        //         }
+        //         return 0;
                 
+        //     }
+        //     else{
+
+        //         setSortAsc(true)
+                
+        //         if (a.name > b.name) {
+        //             return -1;
+        //         }
+        //         if (a.name < b.name) {
+        //             return 1;
+        //         }
+        //         return 0;
+
+        //     }
+
+        // }
+
+        // setProducts([...sortedProducts])
+
+    }
+
+    return (
+        <div>
+
+            {/* 
+            <div>
+                <select onChange={(e) => changeOption(e.target.value)}>
+                    <option>Hepsi</option>
+                    {
+                        categories.map((item, key) => {
+                            return (<option key={key} value={item.id}>{item.name}</option>)
+                        })
+                    }
+                </select>
             </div>
             <div>
-                <label>Count:</label>
-                <input type='text' value={count} onChange={(e) => setCount(e.target.value)} />
-            </div>
+
+                 */}
             <div>
-                <button onClick={() => getproducts()}>Get products</button>
+                <button onClick={() => sortProducts()}>Sort Products</button>
+                <table>
+                    <tr>
+                        <td>Id</td>
+                        <td>Name</td>
+                        <td>Price</td>
+                        <td>Category Id</td>
+                        <td>Go to Detail</td>
+                    </tr>
+
+                    {
+                      products &&  products.map((item, key) => {
+                            return (
+                                <tr key={key}>
+                                    <td>{item.id}</td>
+                                    <td>{item.name}</td>
+                                    <td>{Number(item.unitPrice)?.toFixed(2)}</td>
+                                    <td>{item.categoryId}</td>
+                                    <td><Link to={'/productdetail/' + item.id}> Detail Page </Link></td>
+                                </tr>
+                            )
+                        })
+                    }
+                </table>
             </div>
-            <table>
-                <tr>
-                    <td>Id</td>
-                    <td>Name</td>
-                    <td>Unit Price</td>
-                    <td>quantityPerUnit</td>
-                </tr>
 
-                {
-                    products.map((item, key) => {
-                        return (
-
-                            <tr key={key}>
-                                <td>{item.id}</td>
-                                <td>{item.name}</td>
-                                <td>{item.unitPrice}</td>
-                                <td>{item.quantityPerUnit}</td>
-                            </tr>
-
-                        )
-                    })
-                }
-
-            </table>
-
-        </>
+        </div>
     )
 }
 
